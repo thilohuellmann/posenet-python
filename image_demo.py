@@ -55,7 +55,7 @@ def main():
             score = pose_scores[0]
             kp = keypoint_scores[0]
             kc = keypoint_coords[0] # split x and y
-            output_data.append(score, *kp, *kc)
+            output_data.append([score, *kp, *kc])
         
         with open('output.csv', 'w') as f:
             writer = csv.writer(f)
