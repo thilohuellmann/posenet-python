@@ -33,7 +33,7 @@ def main():
         start = time.time()
         
         output_data = []
-        for f in filenames[:50]:
+        for f in filenames:
             input_image, draw_image, output_scale = posenet.read_imgfile(
                 f, scale_factor=args.scale_factor, output_stride=output_stride)
 
