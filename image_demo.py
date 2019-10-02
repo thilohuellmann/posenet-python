@@ -3,6 +3,7 @@ import cv2
 import time
 import argparse
 import os
+import csv
 
 import posenet
 
@@ -30,6 +31,8 @@ def main():
             f.path for f in os.scandir(args.image_dir) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
         start = time.time()
+        
+        output_data = []
         for f in filenames:
             input_image, draw_image, output_scale = posenet.read_imgfile(
                 f, scale_factor=args.scale_factor, output_stride=output_stride)
@@ -48,15 +51,19 @@ def main():
                 max_pose_detections=10,
                 min_pose_score=0.25)
             
-            print('pose scores:')
-            print(pose_scores)
+
+            score = pose_scores[0]
+            kp = keypoint_scores[0]
+            kc = keypoint_coords[0] # split x and y
+            output_data.append(score, *kp, *kc)
+        
+        with open('output.csv', 'w') as f:
+            writer = csv.writer(f)
+            for row in output_data:
+                writer.writerow(row)
+        
+        print('csv created')
             
-            print('keypoint scores:')
-            print(keypoint_scores)
-            
-            print('keypoint coords:')
-            print(keypoint_coords)
-            break
             
 #             keypoint_coords *= output_scale
 
