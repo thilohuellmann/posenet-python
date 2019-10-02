@@ -33,7 +33,7 @@ def main():
         start = time.time()
         
         output_data = []
-        for f in filenames:
+        for f in filenames[:50]:
             input_image, draw_image, output_scale = posenet.read_imgfile(
                 f, scale_factor=args.scale_factor, output_stride=output_stride)
 
@@ -54,8 +54,13 @@ def main():
 
             score = pose_scores[0]
             kp = keypoint_scores[0]
-            kc = keypoint_coords[0] # split x and y
-            output_data.append([score, *kp, *kc])
+            
+            splitted = []
+            for kc in keypoint_coords[0]:
+                splitted.append(kc[0])
+                splitted.append(kc[1])
+                
+            output_data.append([score, *kp, *splitted])
         
         with open('output.csv', 'w') as f:
             writer = csv.writer(f)
